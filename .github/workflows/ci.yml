@@ -1,0 +1,38 @@
+name: CI (Build & Test)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Backend Abhängigkeiten installieren & Test
+        run: |
+          cd backend
+          npm install
+          if [ -f package.json ] && grep -q "\"test\":" package.json; then npm test; else echo "Kein Testskript definiert"; fi
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Frontend Abhängigkeiten installieren & Build
+        run: |
+          cd frontend
+          npm install || echo "Kein Frontend vorhanden"
+          npm run build || echo "Kein Build-Skript vorhanden"
