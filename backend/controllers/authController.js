@@ -1,14 +1,8 @@
-const authService = require('../services/authService');
-
-exports.loginUser = async (req, res) => {
-  try {
-    const token = await authService.authenticate(req.body);
-    res.json({ token });
-  } catch (error) {
-    res.status(401).json({ error: error.message });
-  }
+// Einfache Demo-Implementierung, später sicher machen!
+exports.login = (req, res) => {
+    res.json({ message: 'Login erfolgreich (Demo)', user: { id: 1, name: 'DemoUser' } });
 };
 
-exports.getUserProfile = async (req, res) => {
-  res.json({ user: req.user });
+exports.register = (req, res) => {
+    res.json({ message: 'Registrierung erfolgreich (Demo)', user: { id: 2, name: req.body.name } });
 };
