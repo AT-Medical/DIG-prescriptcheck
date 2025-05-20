@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
-const config = require('./config');
 
 const connectDB = async () => {
-  try {
-    await mongoose.connect(config.mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
+    try {
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/prescriptcheck', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('MongoDB verbunden');
+    } catch (error) {
+        console.error('MongoDB Fehler:', error);
+        process.exit(1);
+    }
 };
 
 module.exports = connectDB;
