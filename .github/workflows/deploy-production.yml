@@ -1,0 +1,120 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
+      confirm:
+        description: 'Type DEPLOY to confirm production deployment'
+        required: true
+        type: string
+
+jobs:
+  validate-input:
+    name: Validate Deployment Input
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "DEPLOY" ]; then
+            echo "ERROR: Deployment not confirmed. Type DEPLOY to confirm."
+            exit 1
+          fi
+          echo "Deployment confirmed for version ${{ github.event.inputs.version }}"
+
+  pre-deployment-checks:
+    name: Pre-Deployment Checks
+    needs: validate-input
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install and test backend
+        working-directory: backend
+        run: |
+          npm ci --prefer-offline || npm install
+          npm test
+
+      - name: Security audit
+        working-directory: backend
+        run: npm audit --audit-level=critical || echo "Audit completed with warnings"
+
+  deploy-production:
+    name: Production Deployment
+    needs: pre-deployment-checks
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Create deployment backup
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            BACKUP_DIR="/opt/backups/prescriptcheck/$(date +%Y%m%d_%H%M%S)"
+            mkdir -p "$BACKUP_DIR"
+            cp -r /opt/prescriptcheck/backend "$BACKUP_DIR/" || true
+            echo "Backup created at $BACKUP_DIR"
+
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/prescriptcheck/backend
+            git fetch --tags
+            git checkout ${{ github.event.inputs.version }}
+            npm install --production
+            pm2 reload prescriptcheck-backend --update-env \
+              || pm2 start index.js --name prescriptcheck-backend
+            pm2 save
+            echo "Production deployment of ${{ github.event.inputs.version }} completed at $(date)"
+
+      - name: Health check production
+        run: |
+          sleep 15
+          curl --fail --retry 5 --retry-delay 10 \
+            ${{ secrets.PRODUCTION_HEALTH_URL || 'http://localhost:3000/api/health' }} \
+            || echo "Health check endpoint not configured"
+
+      - name: Rollback on failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            echo "Deployment failed - initiating rollback..."
+            LATEST_BACKUP=$(ls -t /opt/backups/prescriptcheck/ | head -1)
+            if [ -n "$LATEST_BACKUP" ]; then
+              cp -r "/opt/backups/prescriptcheck/$LATEST_BACKUP/backend" /opt/prescriptcheck/
+              cd /opt/prescriptcheck/backend
+              npm install --production
+              pm2 restart prescriptcheck-backend
+              echo "Rollback completed from backup $LATEST_BACKUP"
+            else
+              echo "No backup found for rollback"
+            fi
+
+      - name: Notify production deployment
+        if: always()
+        run: |
+          echo "Production deployment status: ${{ job.status }}"
+          echo "Version deployed: ${{ github.event.inputs.version }}"

@@ -1,0 +1,43 @@
+# Code Owners – PrescriptCheck
+# Automatically requests review from code owners on pull requests.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global ownership – AT Medical engineering team reviews all changes
+* @AT-Medical
+
+# Backend application code
+/backend/ @AT-Medical
+/src/backend/ @AT-Medical
+
+# Frontend application code
+/frontend/ @AT-Medical
+/src/frontend/ @AT-Medical
+
+# Security-critical files require explicit review
+/backend/middleware/authMiddleware.js @AT-Medical
+/backend/utils/encryption.js @AT-Medical
+/backend/utils/tokenUtils.js @AT-Medical
+/src/backend/security/ @AT-Medical
+/security/ @AT-Medical
+
+# Compliance and healthcare-related modules
+/backend/compliance/ @AT-Medical
+/src/backend/compliance/ @AT-Medical
+/docs/COMPLIANCE.md @AT-Medical
+/docs/DATA_PROTECTION.md @AT-Medical
+
+# CI/CD and deployment workflows
+/.github/workflows/ @AT-Medical
+/deploy/ @AT-Medical
+/docker/ @AT-Medical
+/scripts/ @AT-Medical
+
+# Documentation
+/docs/ @AT-Medical
+/README.md @AT-Medical
+/CHANGELOG.md @AT-Medical
+
+# Configuration files
+/config/ @AT-Medical
+/.env.example @AT-Medical
+/backend/.env.example @AT-Medical

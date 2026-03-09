@@ -1,0 +1,16 @@
+apiVersion: v2
+name: prescriptcheck
+description: PrescriptCheck – Healthcare Prescription Validation Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - healthcare
+  - prescriptions
+  - pharmacy
+  - hipaa
+  - gdpr
+maintainers:
+  - name: AT Medical
+    email: dev@atmedical.at
+    url: https://atmedical.at

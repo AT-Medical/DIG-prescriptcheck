@@ -1,0 +1,44 @@
+# PrescriptCheck – Production Dockerfile
+# Multi-stage build for optimized production image
+
+# ─── Stage 1: Build ───────────────────────────────────────────────────────────
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install backend dependencies
+COPY backend/package*.json ./backend/
+RUN cd backend && npm ci --only=production --no-audit
+
+# Install frontend dependencies and build
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm ci --no-audit
+COPY frontend/ ./frontend/
+RUN cd frontend && npm run build
+
+# ─── Stage 2: Production Runtime ──────────────────────────────────────────────
+FROM node:20-alpine AS production
+
+# Security: run as non-root user
+RUN addgroup -S prescriptcheck && adduser -S prescriptcheck -G prescriptcheck
+
+WORKDIR /app
+
+# Copy only production dependencies and built application
+COPY --from=builder --chown=prescriptcheck:prescriptcheck /app/backend/node_modules ./backend/node_modules
+COPY --chown=prescriptcheck:prescriptcheck backend/ ./backend/
+COPY --from=builder --chown=prescriptcheck:prescriptcheck /app/frontend/dist ./frontend/dist
+
+# Copy shared configuration
+COPY --chown=prescriptcheck:prescriptcheck config/ ./config/
+COPY --chown=prescriptcheck:prescriptcheck src/shared/ ./src/shared/
+
+USER prescriptcheck
+
+ENV NODE_ENV=production
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD wget -qO- http://localhost:3000/api/health || exit 1
+
+CMD ["node", "backend/index.js"]

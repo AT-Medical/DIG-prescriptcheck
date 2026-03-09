@@ -1,0 +1,51 @@
+/**
+ * src/shared/schemas/audit.json
+ * JSON Schema for audit log entries
+ */
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://prescriptcheck.atmedical.at/schemas/audit.json",
+  "title": "AuditLogEntry",
+  "description": "HIPAA/GDPR compliant audit log entry schema",
+  "type": "object",
+  "required": ["timestamp", "userId", "action", "resourceType", "integrityHash"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "userId": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "LOGIN_SUCCESS", "LOGIN_FAILED", "LOGOUT", "PASSWORD_CHANGED",
+        "PRESCRIPTION_CREATED", "PRESCRIPTION_VIEWED", "PRESCRIPTION_UPDATED",
+        "PRESCRIPTION_DELETED", "PRESCRIPTION_VALIDATED", "PRESCRIPTION_DISPENSED",
+        "USER_CREATED", "USER_UPDATED", "USER_DEACTIVATED",
+        "DATA_EXPORT_REQUESTED", "DATA_DELETED_GDPR",
+        "CONSENT_GIVEN", "CONSENT_REVOKED"
+      ]
+    },
+    "resourceType": {
+      "type": "string"
+    },
+    "resourceId": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "ipAddress": { "type": "string" },
+        "userAgent": { "type": "string" }
+      }
+    },
+    "integrityHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "HMAC-SHA256 integrity hash for tamper detection"
+    }
+  },
+  "additionalProperties": false
+}

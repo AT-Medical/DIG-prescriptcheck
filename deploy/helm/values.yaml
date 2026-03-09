@@ -1,0 +1,75 @@
+# deploy/helm/values.yaml
+# Default values for PrescriptCheck Helm chart
+
+replicaCount: 3
+
+image:
+  backend:
+    repository: prescriptcheck/backend
+    tag: latest
+    pullPolicy: Always
+  frontend:
+    repository: prescriptcheck/frontend
+    tag: latest
+    pullPolicy: Always
+
+service:
+  type: ClusterIP
+  backendPort: 3000
+  frontendPort: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: prescriptcheck.atmedical.at
+  tls:
+    enabled: true
+    secretName: prescriptcheck-tls
+
+resources:
+  backend:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  frontend:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+config:
+  nodeEnv: production
+  logLevel: info
+  enable2FA: "true"
+  rateLimitMax: "100"
+  jwtExpiresIn: "24h"
+  bcryptRounds: "12"
+
+# Secrets are managed externally (Vault, AWS Secrets Manager, etc.)
+# Do not set real values here
+secrets:
+  mongodbUri: ""
+  jwtSecret: ""
+  encryptionKey: ""
+
+mongodb:
+  enabled: false  # Set to true to deploy MongoDB as part of the chart
+  uri: ""
+
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+  grafana:
+    enabled: true

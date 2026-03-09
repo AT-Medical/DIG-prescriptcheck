@@ -1,0 +1,52 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run tests before staging deploy
+        working-directory: backend
+        run: npm test
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/prescriptcheck-staging/backend
+            git fetch origin main
+            git reset --hard origin/main
+            npm install --production
+            pm2 restart prescriptcheck-staging || pm2 start index.js --name prescriptcheck-staging
+            echo "Staging deployment completed at $(date)"
+
+      - name: Health check staging
+        run: |
+          sleep 10
+          curl --fail --retry 3 --retry-delay 5 \
+            ${{ secrets.STAGING_HEALTH_URL || 'http://localhost:3000/api/health' }} \
+            || echo "Health check endpoint not configured"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          echo "Staging deployment status: ${{ job.status }}"

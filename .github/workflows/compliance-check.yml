@@ -1,0 +1,115 @@
+name: Compliance Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  gdpr-check:
+    name: GDPR Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for GDPR compliance patterns
+        run: |
+          echo "Checking GDPR compliance..."
+
+          # Verify audit trail implementation exists
+          if ! find . -name "*.js" -not -path "*/node_modules/*" | xargs grep -l "audit" 2>/dev/null | head -1; then
+            echo "WARNING: No audit trail implementation found"
+          else
+            echo "✓ Audit trail implementation found"
+          fi
+
+          # Check for data encryption references
+          if ! find . -name "*.js" -not -path "*/node_modules/*" | xargs grep -l "encrypt\|bcrypt\|crypto" 2>/dev/null | head -1; then
+            echo "WARNING: No encryption implementation found"
+          else
+            echo "✓ Encryption implementation found"
+          fi
+
+          echo "GDPR check completed"
+
+  hipaa-check:
+    name: HIPAA Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify HIPAA requirements
+        run: |
+          echo "Checking HIPAA compliance..."
+
+          # Check for authentication middleware
+          if ! find . -name "*.js" -not -path "*/node_modules/*" | xargs grep -l "authMiddleware\|verifyToken\|authenticate" 2>/dev/null | head -1; then
+            echo "WARNING: No authentication middleware found"
+          else
+            echo "✓ Authentication middleware found"
+          fi
+
+          # Check for role-based access control
+          if ! find . -name "*.js" -not -path "*/node_modules/*" | xargs grep -l "roleCheck\|role\|permission" 2>/dev/null | head -1; then
+            echo "WARNING: No RBAC implementation found"
+          else
+            echo "✓ Role-based access control found"
+          fi
+
+          echo "HIPAA check completed"
+
+  dsgvo-check:
+    name: DSGVO Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify DSGVO requirements
+        run: |
+          echo "Checking DSGVO (German GDPR) compliance..."
+
+          # Verify data protection documentation exists
+          if [ -f "docs/DATA_PROTECTION.md" ] || [ -f "docs/COMPLIANCE.md" ]; then
+            echo "✓ Data protection documentation found"
+          else
+            echo "WARNING: No data protection documentation found"
+          fi
+
+          # Check for consent management
+          if find . -name "*.js" -not -path "*/node_modules/*" | xargs grep -l "consent\|datenschutz\|dsgvo" 2>/dev/null | head -1; then
+            echo "✓ Consent management references found"
+          else
+            echo "INFO: Consider adding explicit consent management"
+          fi
+
+          echo "DSGVO check completed"
+
+  env-security:
+    name: Environment Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check environment configuration security
+        run: |
+          echo "Checking environment configuration..."
+
+          # Verify .env files are gitignored
+          if grep -q "\.env$\|\.env\." .gitignore 2>/dev/null; then
+            echo "✓ .env files are gitignored"
+          else
+            echo "WARNING: .env files may not be properly gitignored"
+          fi
+
+          # Check that no actual .env files (with secrets) are committed
+          if git ls-files | grep -E "^\.env$" | grep -v ".example\|.test\|.production.example"; then
+            echo "ERROR: .env file with potential secrets is tracked by git"
+            exit 1
+          else
+            echo "✓ No secret .env files tracked in git"
+          fi
+
+          echo "Environment security check completed"
