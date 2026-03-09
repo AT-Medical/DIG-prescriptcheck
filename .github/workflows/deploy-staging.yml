@@ -9,6 +9,8 @@ jobs:
   deploy-staging:
     name: Deploy to Staging Environment
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     environment: staging
     steps:
       - uses: actions/checkout@v4

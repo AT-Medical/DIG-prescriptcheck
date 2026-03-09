@@ -12,6 +12,8 @@ jobs:
   gdpr-check:
     name: GDPR Compliance Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +40,8 @@ jobs:
   hipaa-check:
     name: HIPAA Compliance Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -64,6 +68,8 @@ jobs:
   dsgvo-check:
     name: DSGVO Compliance Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -90,6 +96,8 @@ jobs:
   env-security:
     name: Environment Security Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 

@@ -16,6 +16,7 @@ jobs:
   validate-input:
     name: Validate Deployment Input
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Check confirmation
         run: |
@@ -29,6 +30,8 @@ jobs:
     name: Pre-Deployment Checks
     needs: validate-input
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,6 +55,8 @@ jobs:
     name: Production Deployment
     needs: pre-deployment-checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     environment: production
     steps:
       - uses: actions/checkout@v4
