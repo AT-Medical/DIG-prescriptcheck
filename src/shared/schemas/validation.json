@@ -1,0 +1,64 @@
+/**
+ * src/shared/schemas/validation.json
+ * JSON Schema for prescription validation request/response
+ */
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://prescriptcheck.atmedical.at/schemas/validation.json",
+  "title": "PrescriptionValidation",
+  "description": "Schema for prescription validation requests and responses",
+  "definitions": {
+    "ValidationRequest": {
+      "type": "object",
+      "required": ["prescriptionNumber", "pharmacyId"],
+      "properties": {
+        "prescriptionNumber": {
+          "type": "string",
+          "pattern": "^\\d{10}$"
+        },
+        "pharmacyId": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}\\d{6}$"
+        },
+        "qrCodeData": {
+          "type": "string",
+          "description": "Optional QR code data for enhanced validation"
+        }
+      }
+    },
+    "ValidationResponse": {
+      "type": "object",
+      "required": ["valid", "prescriptionNumber", "checkedAt"],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "prescriptionNumber": {
+          "type": "string"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "validated", "dispensed", "expired", "cancelled", "rejected"]
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

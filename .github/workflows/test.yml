@@ -1,0 +1,85 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-unit-tests:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run frontend tests
+        run: npm test
+
+  compliance-tests:
+    name: Compliance Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -rn --include="*.js" --include="*.ts" "password\s*=\s*['\"][^'\"]\+['\"]" src/ backend/ 2>/dev/null | grep -v ".test." | grep -v "example"; then
+            echo "WARNING: Possible hardcoded passwords found"
+            exit 1
+          fi
+          echo "No hardcoded passwords detected"
+
+      - name: Validate environment example files
+        run: |
+          if [ ! -f .env.example ] && [ ! -f backend/.env.example ]; then
+            echo "WARNING: No .env.example file found"
+          else
+            echo ".env.example file exists"
+          fi

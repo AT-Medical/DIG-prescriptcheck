@@ -1,0 +1,94 @@
+# PrescriptCheck – Docker Compose for Full Stack Development
+# Run: docker compose -f docker/docker-compose.yml up
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: prescriptcheck-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/prescriptcheck
+      - JWT_SECRET=${JWT_SECRET:-change-in-production}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-in-production}
+      - ALLOWED_ORIGINS=http://localhost:3001
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ../backend:/app/backend:ro
+      - backend_logs:/app/logs
+    networks:
+      - prescriptcheck-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: builder
+    container_name: prescriptcheck-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
+    volumes:
+      - ../frontend:/app/frontend:ro
+    networks:
+      - prescriptcheck-network
+    command: ["sh", "-c", "cd /app/frontend && npm run dev -- --host"]
+
+  mongo:
+    image: mongo:7.0
+    container_name: prescriptcheck-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=prescriptcheck
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - prescriptcheck-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: prescriptcheck-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx_certs:/etc/nginx/certs
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - prescriptcheck-network
+
+volumes:
+  mongo_data:
+  backend_logs:
+  nginx_certs:
+
+networks:
+  prescriptcheck-network:
+    driver: bridge

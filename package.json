@@ -1,1 +1,5 @@
-{\n  "name": "prescriptcheck", "version": "0.1.0"\n}
+{
+  "name": "prescriptcheck",
+  "version": "0.1.0",
+  "description": "PrescriptCheck – Healthcare Prescription Validation Platform"
+}

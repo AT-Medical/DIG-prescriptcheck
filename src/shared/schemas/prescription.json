@@ -1,0 +1,78 @@
+/**
+ * src/shared/schemas/prescription.json
+ * JSON Schema for prescription validation (backend and frontend)
+ * Used for request validation and form validation
+ */
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://prescriptcheck.atmedical.at/schemas/prescription.json",
+  "title": "Prescription",
+  "description": "PrescriptCheck prescription data schema",
+  "type": "object",
+  "required": ["prescriptionNumber", "prescriptionType", "issuedAt", "medication"],
+  "properties": {
+    "prescriptionNumber": {
+      "type": "string",
+      "pattern": "^\\d{10}$",
+      "description": "10-digit prescription number"
+    },
+    "prescriptionType": {
+      "type": "string",
+      "enum": ["standard", "private", "controlled", "foreign", "emergency"],
+      "description": "Type of prescription"
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the prescription was issued (ISO 8601)"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the prescription expires"
+    },
+    "medication": {
+      "type": "object",
+      "required": ["name", "dosage"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "dosage": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?\\s?(mg|ml|g|IU|µg|mcg|units?)$"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "instructions": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "doctorId": {
+      "type": "string",
+      "description": "ID of the prescribing doctor"
+    },
+    "patientId": {
+      "type": "string",
+      "description": "ID of the patient (anonymized for GDPR)"
+    },
+    "pharmacyId": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}\\d{6}$",
+      "description": "Pharmacy registration number"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "validated", "dispensed", "expired", "cancelled", "rejected"],
+      "default": "pending"
+    }
+  },
+  "additionalProperties": false
+}

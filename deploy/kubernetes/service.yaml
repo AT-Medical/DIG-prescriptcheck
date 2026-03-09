@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prescriptcheck-backend
+  namespace: prescriptcheck
+  labels:
+    app: prescriptcheck
+    component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: prescriptcheck
+    component: backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prescriptcheck-frontend
+  namespace: prescriptcheck
+  labels:
+    app: prescriptcheck
+    component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: prescriptcheck
+    component: frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
