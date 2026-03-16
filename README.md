@@ -249,3 +249,16 @@ Jegliche missbräuchliche oder nicht autorisierte Nutzung – insbesondere zur R
 **Projektleitung:** Dr. Andreas Tremml  
 **Support:** support@at-medical.de  
 **Webseite:** [www.at-medical.de](https://www.at-medical.de)
+
+---
+
+## Versionsinfo
+
+| Feld | Wert |
+|---|---|
+| **Version** | 0.9.0 |
+| **Datum** | 2026-03-16 |
+| **Status** | Verified |
+| **Repository** | PrescriptCheck |
+| **Owner** | AT Medical GmbH |
+| **Security Class** | High |

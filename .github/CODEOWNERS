@@ -2,42 +2,48 @@
 # Automatically requests review from code owners on pull requests.
 # See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Global ownership – AT Medical engineering team reviews all changes
-* @AT-Medical
+# Global ownership – all changes require admin-team review
+* @AT-Medical/admin-team
 
 # Backend application code
-/backend/ @AT-Medical
-/src/backend/ @AT-Medical
+/backend/ @AT-Medical/admin-team @AT-Medical/devops-team
+/src/backend/ @AT-Medical/admin-team @AT-Medical/devops-team
 
 # Frontend application code
-/frontend/ @AT-Medical
-/src/frontend/ @AT-Medical
+/frontend/ @AT-Medical/admin-team @AT-Medical/devops-team
+/src/frontend/ @AT-Medical/admin-team @AT-Medical/devops-team
 
-# Security-critical files require explicit review
-/backend/middleware/authMiddleware.js @AT-Medical
-/backend/utils/encryption.js @AT-Medical
-/backend/utils/tokenUtils.js @AT-Medical
-/src/backend/security/ @AT-Medical
-/security/ @AT-Medical
+# Security-critical files require explicit security-team review
+/backend/middleware/authMiddleware.js @AT-Medical/admin-team @AT-Medical/security-team
+/backend/utils/encryption.js @AT-Medical/admin-team @AT-Medical/security-team
+/backend/utils/tokenUtils.js @AT-Medical/admin-team @AT-Medical/security-team
+/src/backend/security/ @AT-Medical/admin-team @AT-Medical/security-team
+/security/ @AT-Medical/admin-team @AT-Medical/security-team
 
 # Compliance and healthcare-related modules
-/backend/compliance/ @AT-Medical
-/src/backend/compliance/ @AT-Medical
-/docs/COMPLIANCE.md @AT-Medical
-/docs/DATA_PROTECTION.md @AT-Medical
+/backend/compliance/ @AT-Medical/admin-team @AT-Medical/security-team
+/src/backend/compliance/ @AT-Medical/admin-team @AT-Medical/security-team
+/docs/COMPLIANCE.md @AT-Medical/admin-team @AT-Medical/security-team
+/docs/DATA_PROTECTION.md @AT-Medical/admin-team @AT-Medical/security-team
 
-# CI/CD and deployment workflows
-/.github/workflows/ @AT-Medical
-/deploy/ @AT-Medical
-/docker/ @AT-Medical
-/scripts/ @AT-Medical
+# CI/CD and deployment workflows require devops and infrastructure review
+/.github/workflows/ @AT-Medical/admin-team @AT-Medical/devops-team @AT-Medical/infrastructure-team
+/deploy/ @AT-Medical/admin-team @AT-Medical/devops-team @AT-Medical/infrastructure-team
+/docker/ @AT-Medical/admin-team @AT-Medical/devops-team @AT-Medical/infrastructure-team
+/scripts/ @AT-Medical/admin-team @AT-Medical/devops-team
+
+# Metadata and governance files
+/metadata/ @AT-Medical/admin-team @AT-Medical/infrastructure-team
+/.github/CODEOWNERS @AT-Medical/admin-team
 
 # Documentation
-/docs/ @AT-Medical
-/README.md @AT-Medical
-/CHANGELOG.md @AT-Medical
+/docs/ @AT-Medical/admin-team
+/README.md @AT-Medical/admin-team
+/CHANGELOG.md @AT-Medical/admin-team
+/SECURITY.md @AT-Medical/admin-team @AT-Medical/security-team
 
 # Configuration files
-/config/ @AT-Medical
-/.env.example @AT-Medical
-/backend/.env.example @AT-Medical
+/config/ @AT-Medical/admin-team @AT-Medical/devops-team
+/configs/ @AT-Medical/admin-team @AT-Medical/infrastructure-team
+/.env.example @AT-Medical/admin-team
+/backend/.env.example @AT-Medical/admin-team
