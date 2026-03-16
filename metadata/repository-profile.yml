@@ -1,0 +1,42 @@
+# ATMED Repository Profile
+# Managed by: AT-Medical/admin-team
+# Last updated: 2026-03-16
+
+repository: PrescriptCheck
+repo-type: product
+domain: medical-software
+security-class: high
+visibility: private
+
+deploy-targets:
+  - vps
+  - r2
+
+review: required
+security-review: required
+
+teams:
+  primary:
+    - AT-Medical/admin-team
+  secondary:
+    - AT-Medical/devops-team
+    - AT-Medical/security-team
+    - AT-Medical/infrastructure-team
+
+tags:
+  - domain:medical-software
+  - domain:prescription-validation
+  - security:high
+  - visibility:restricted
+  - deploy-target:vps
+  - deploy-target:r2
+  - owner:admin-team
+  - owner:security-team
+
+integration:
+  atmed-infrastructure-pipeline: true
+  central-smtp-reporting: true
+  central-governance-rules: true
+
+status: active
+version: "0.9.0"

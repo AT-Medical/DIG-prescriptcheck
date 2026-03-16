@@ -6,6 +6,16 @@
   <strong>PrescriptCheck</strong> ist eine digitale Plattform zur Validierung von Privatrezepten in Deutschland. Ziel ist es, Apotheken eine sichere Möglichkeit zu geben, die Echtheit und Gültigkeit eines Rezepts zu überprüfen – datenschutzkonform, revisionssicher und praxisnah.
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/type-product-blue?style=flat-square" alt="type: product"/>
+  <img src="https://img.shields.io/badge/domain-medical--software-green?style=flat-square" alt="domain: medical-software"/>
+  <img src="https://img.shields.io/badge/visibility-private-red?style=flat-square" alt="visibility: private"/>
+  <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="status: active"/>
+  <img src="https://img.shields.io/badge/deploy-vps%20%7C%20r2-orange?style=flat-square" alt="deploy: vps | r2"/>
+  <img src="https://img.shields.io/badge/team-admin-blueviolet?style=flat-square" alt="team: admin"/>
+  <img src="https://img.shields.io/badge/team-security-critical&color=red?style=flat-square" alt="team: security"/>
+</p>
+
 ---
 
 ## Features
@@ -27,16 +37,20 @@
 ## Projektstruktur
 
 ```
-/backend            → Node.js (Express) API  
-/frontend           → Vue 3 App mit Vite  
-/scripts            → Shell-Skripte für Deployment, SSL, Seeding  
-/docs               → Dokumentation, Architektur, Indexseiten  
-/scorm              → SCORM Module für Weiterbildung  
-.github/workflows   → CI/CD Konfiguration (GitHub Actions)  
-pm2.config.js       → Prozessmanager-Konfiguration (PM2)  
-Dockerfile          → Docker-Build-Anleitung  
-docker-compose.yml  → Lokale Multi-Service-Entwicklung  
-.env.template       → Beispiel für Produktionskonfiguration  
+/backend            → Node.js (Express) API
+/frontend           → Vue 3 App mit Vite
+/scripts            → Shell-Skripte für Deployment, SSL, Seeding
+/docs               → Dokumentation, Architektur, Indexseiten
+/scorm              → SCORM Module für Weiterbildung
+/configs            → Shared configuration templates
+/tests              → Automatisierte Tests
+/metadata           → ATMED Repository-Profil und Enterprise-Tagging
+/artifacts          → CI/CD Build-Artefakte (nicht eingecheckt)
+.github/workflows   → CI/CD Konfiguration (GitHub Actions)
+pm2.config.js       → Prozessmanager-Konfiguration (PM2)
+Dockerfile          → Docker-Build-Anleitung
+docker-compose.yml  → Lokale Multi-Service-Entwicklung
+.env.example        → Beispiel für Produktionskonfiguration
 ```
 
 ---
