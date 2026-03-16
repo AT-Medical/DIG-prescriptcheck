@@ -1,0 +1,75 @@
+name: Repository Self-Check
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # Weekly on Monday at 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  self-check:
+    name: Repository Health Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for sensitive files accidentally committed
+        run: |
+          SENSITIVE_PATTERNS=(
+            ".env$"
+            ".env.production$"
+            "*.pem"
+            "*.key"
+            "*.p12"
+            "*.pfx"
+            "id_rsa"
+            "id_ecdsa"
+            "id_ed25519"
+          )
+          FOUND=()
+          for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+            while IFS= read -r match; do
+              FOUND+=("$match")
+            done < <(git ls-files | grep -E "$pattern" || true)
+          done
+          if [ ${#FOUND[@]} -gt 0 ]; then
+            echo "❌ Potentially sensitive files found in repository:"
+            for f in "${FOUND[@]}"; do echo "  - $f"; done
+            exit 1
+          fi
+          echo "✅ No sensitive files detected."
+
+      - name: Verify .gitignore covers key exclusions
+        run: |
+          REQUIRED_PATTERNS=("node_modules" "\.env" "dist" "\.log" "artifacts")
+          MISSING=()
+          for p in "${REQUIRED_PATTERNS[@]}"; do
+            if ! grep -qE "$p" .gitignore; then
+              MISSING+=("$p")
+            fi
+          done
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "⚠️  .gitignore may be missing patterns for: ${MISSING[*]}"
+          else
+            echo "✅ .gitignore covers all key exclusion patterns."
+          fi
+
+      - name: Check README is non-empty and has minimum content
+        run: |
+          MIN_LINES=20
+          ACTUAL=$(wc -l < README.md)
+          if [ "$ACTUAL" -lt "$MIN_LINES" ]; then
+            echo "⚠️  README.md appears too short ($ACTUAL lines). Minimum expected: $MIN_LINES."
+          else
+            echo "✅ README.md has $ACTUAL lines."
+          fi
+
+      - name: Check CHANGELOG contains an entry
+        run: |
+          if grep -q '## \[' CHANGELOG.md; then
+            echo "✅ CHANGELOG.md contains at least one version entry."
+          else
+            echo "⚠️  CHANGELOG.md does not appear to have any versioned entries."
+          fi

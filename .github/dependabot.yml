@@ -1,0 +1,85 @@
+# Dependabot Configuration
+# Keeps dependencies automatically up-to-date and surfaces security advisories.
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+
+updates:
+  # Backend Node.js dependencies
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AT-Medical/admin-team"
+      - "AT-Medical/devops-team"
+    labels:
+      - "dependencies"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    ignore:
+      # Only patch/minor updates for production-critical packages; majors reviewed manually
+      - dependency-name: "mongoose"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "stripe"
+        update-types: ["version-update:semver-major"]
+
+  # Frontend Node.js dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AT-Medical/admin-team"
+      - "AT-Medical/devops-team"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps-frontend)"
+      include: "scope"
+
+  # Root-level package (if any)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "AT-Medical/admin-team"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps-root)"
+      include: "scope"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AT-Medical/admin-team"
+      - "AT-Medical/infrastructure-team"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(actions)"
+      include: "scope"

@@ -1,0 +1,76 @@
+name: Governance Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * 1'  # Weekly on Monday at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  governance-check:
+    name: Repository Governance Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required governance files
+        run: |
+          REQUIRED_FILES=(
+            "LICENSE"
+            "LICENSE_COMMERCIAL.md"
+            "README.md"
+            "CHANGELOG.md"
+            "SECURITY.md"
+            "CODE_OF_CONDUCT.md"
+            "CONTRIBUTING.md"
+            ".github/CODEOWNERS"
+            ".github/dependabot.yml"
+            "metadata/repository-profile.yml"
+          )
+          MISSING=()
+          for f in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$f" ]; then
+              MISSING+=("$f")
+            fi
+          done
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "❌ Missing required governance files:"
+            for m in "${MISSING[@]}"; do echo "  - $m"; done
+            exit 1
+          fi
+          echo "✅ All required governance files are present."
+
+      - name: Validate metadata/repository-profile.yml
+        run: |
+          if ! command -v python3 &> /dev/null; then
+            echo "python3 not available, skipping YAML validation"
+            exit 0
+          fi
+          python3 -c "
+          import sys, yaml
+          try:
+            with open('metadata/repository-profile.yml') as f:
+              data = yaml.safe_load(f)
+            required_keys = ['repository', 'repo-type', 'domain', 'security-class', 'status', 'version']
+            missing = [k for k in required_keys if k not in data]
+            if missing:
+              print(f'❌ Missing keys in repository-profile.yml: {missing}')
+              sys.exit(1)
+            print('✅ repository-profile.yml is valid.')
+          except Exception as e:
+            print(f'❌ YAML validation error: {e}')
+            sys.exit(1)
+          " || python3 -c "
+          import sys
+          try:
+            import yaml
+          except ImportError:
+            print('pyyaml not installed, skipping YAML validation')
+            sys.exit(0)
+          "
