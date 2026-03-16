@@ -1,0 +1,78 @@
+name: Safe Cleanup
+
+on:
+  schedule:
+    - cron: '0 5 * * 0'  # Weekly on Sunday at 05:00 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no deletions)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  cleanup-old-artifacts:
+    name: Clean Up Old Workflow Artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete artifacts older than 30 days
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'true' }}
+        run: |
+          echo "Dry run: $DRY_RUN"
+          OWNER="${GITHUB_REPOSITORY_OWNER}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+          CUTOFF=$(date -d '30 days ago' +%s)
+
+          gh api \
+            --paginate \
+            "/repos/${OWNER}/${REPO}/actions/artifacts" \
+            --jq '.artifacts[] | select(.expired == false) | {id: .id, name: .name, created_at: .created_at}' \
+          | python3 -c "
+          import sys, json, subprocess
+          from datetime import datetime, timezone
+
+          dry_run = '$DRY_RUN' == 'true'
+          cutoff_ts = int('$CUTOFF')
+          cutoff = datetime.fromtimestamp(cutoff_ts, tz=timezone.utc)
+
+          deleted = 0
+          for line in sys.stdin:
+            line = line.strip()
+            if not line:
+              continue
+            try:
+              artifact = json.loads(line)
+            except json.JSONDecodeError:
+              continue
+            created = datetime.fromisoformat(artifact['created_at'].replace('Z', '+00:00'))
+            if created < cutoff:
+              if dry_run:
+                print(f'[DRY RUN] Would delete artifact {artifact[\"id\"]} ({artifact[\"name\"]}, created {artifact[\"created_at\"]})')
+              else:
+                result = subprocess.run(
+                  ['gh', 'api', '--method', 'DELETE',
+                   f'/repos/${OWNER}/${REPO}/actions/artifacts/{artifact[\"id\"]}'],
+                  capture_output=True, text=True
+                )
+                if result.returncode == 0:
+                  print(f'✅ Deleted artifact {artifact[\"id\"]} ({artifact[\"name\"]})')
+                  deleted += 1
+                else:
+                  print(f'⚠️  Failed to delete {artifact[\"id\"]}: {result.stderr}')
+          if dry_run:
+            print('Dry run complete. Re-run with dry_run=false to apply deletions.')
+          else:
+            print(f'Deleted {deleted} artifacts.')
+          " || echo "Cleanup complete (no artifacts to process or python3 unavailable)."

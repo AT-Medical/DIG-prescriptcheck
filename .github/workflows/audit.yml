@@ -10,6 +10,9 @@ on:
 jobs:
   audit:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
@@ -18,22 +21,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
       - name: Abhängigkeiten installieren
-        run: |
-          cd backend
-          npm install
+        run: npm ci --prefer-offline || npm install
 
       - name: Sicherheits-Audit (npm audit)
-        run: |
-          cd backend
-          npm audit --production
+        run: npm audit --production
 
       - name: Ergebnis als Artefakt bereitstellen
         if: always()
-        run: |
-          cd backend
-          npm audit --json > npm-audit-report.json
+        run: npm audit --json > npm-audit-report.json
         continue-on-error: true
 
       - name: Audit-Report hochladen

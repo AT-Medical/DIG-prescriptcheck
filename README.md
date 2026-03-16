@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="status: active"/>
   <img src="https://img.shields.io/badge/deploy-vps%20%7C%20r2-orange?style=flat-square" alt="deploy: vps | r2"/>
   <img src="https://img.shields.io/badge/team-admin-blueviolet?style=flat-square" alt="team: admin"/>
-  <img src="https://img.shields.io/badge/team-security-critical&color=red?style=flat-square" alt="team: security"/>
+  <img src="https://img.shields.io/badge/team-security--critical-red?style=flat-square" alt="team: security-critical"/>
 </p>
 
 ---
@@ -67,7 +67,7 @@ npm install
 
 ### 2. Umgebungsvariablen
 
-Erstelle eine Datei `.env.production` auf Basis der Vorlage `.env.template`:
+Erstelle eine Datei `.env.production` auf Basis der Vorlage `.env.example`:
 
 ```env
 NODE_ENV=production
@@ -133,7 +133,7 @@ PrescriptCheck wurde nach dem Prinzip der „Security by Design“ und „Privac
 node_modules/
 .env
 .env.production
-.env.template
+.env.example
 dist/
 .vscode/
 logs/
