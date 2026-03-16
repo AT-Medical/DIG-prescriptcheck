@@ -1,0 +1,55 @@
+======================================
+ AT Medical - Repository Self Check
+ Repository: DIG-prescriptcheck
+ Date: 2026-03-16T15:21:55Z
+======================================
+
+--- Structure Completeness ---
+[PASS] README.md exists
+[PASS] CONTRIBUTING.md exists
+[PASS] SECURITY.md exists
+[PASS] CODE_OF_CONDUCT.md exists
+[PASS] CHANGELOG.md exists
+
+--- Metadata Presence ---
+[PASS] repository-profile.yml
+[PASS] metadata/tags/taxonomy.yml
+[PASS] metadata/tags/rules.yml
+[PASS] metadata/tags/examples.yml
+[PASS] metadata/tags/file-tags.yml
+
+--- Workflow References ---
+[PASS] .github/workflows/ci.yml
+[PASS] .github/workflows/audit.yml
+[PASS] .github/workflows/ci-validation.yml
+[PASS] .github/workflows/governance-check.yml
+[PASS] .github/workflows/tag-validation.yml
+[PASS] .github/workflows/dependency-check.yml
+[PASS] .github/workflows/cleanup-weekly.yml
+[PASS] .github/workflows/repository-selfcheck.yml
+[PASS] .github/workflows/file-tagging.yml
+
+--- Dependabot Configuration ---
+[PASS] dependabot.yml
+
+--- Script Executability ---
+[PASS] scripts/backup.sh exists
+[PASS] scripts/deploy.sh exists
+[PASS] scripts/start.sh exists
+[PASS] scripts/test.sh exists
+
+--- Artifact Directories ---
+[PASS] artifacts/incoming/
+[PASS] artifacts/staged/
+[PASS] artifacts/releases/
+
+--- Documentation Verification Blocks ---
+[PASS] README.md has verification block
+[PASS] CONTRIBUTING.md has verification block
+[PASS] SECURITY.md has verification block
+[PASS] CODE_OF_CONDUCT.md has verification block
+
+======================================
+ Summary: PASS=31  WARN=0  FAIL=0
+======================================
+Status: OK

@@ -1,0 +1,36 @@
+name: Weekly Cleanup
+
+on:
+  schedule:
+    - cron: '0 1 * * 0'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    name: Weekly Repository Cleanup
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clean generated status files
+        run: |
+          echo "Cleaning up temporary generated files..."
+          find status/generated/ -name "*.tmp" -type f -delete 2>/dev/null || true
+          echo "OK: Cleanup complete"
+
+      - name: Summarize artifact directories
+        run: |
+          echo "=== Artifact Directory Summary ==="
+          for dir in artifacts/incoming artifacts/staged artifacts/releases; do
+            if [ -d "$dir" ]; then
+              count=$(find "$dir" -type f | wc -l)
+              echo "$dir: $count files"
+            fi
+          done
+
+      - name: Report cleanup status
+        run: |
+          echo "Weekly cleanup completed at $(date -u)"

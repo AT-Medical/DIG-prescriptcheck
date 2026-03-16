@@ -1,0 +1,51 @@
+name: Dependency Check
+
+on:
+  schedule:
+    - cron: '0 3 * * 2'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/package.json'
+      - 'frontend/package.json'
+      - 'package.json'
+
+jobs:
+  dependency-audit:
+    runs-on: ubuntu-latest
+    name: Dependency Security Audit
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Audit backend dependencies
+        run: |
+          if [ -f "backend/package.json" ]; then
+            cd backend
+            npm install --ignore-scripts
+            npm audit --production --json > /tmp/backend-audit.json || true
+            npm audit --production || true
+          fi
+
+      - name: Audit frontend dependencies
+        run: |
+          if [ -f "frontend/package.json" ]; then
+            cd frontend
+            npm install --ignore-scripts
+            npm audit --production || true
+          fi
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-results
+          path: /tmp/backend-audit.json
+          if-no-files-found: ignore

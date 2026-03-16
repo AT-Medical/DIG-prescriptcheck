@@ -1,0 +1,19 @@
+repository_name: DIG-prescriptcheck
+repository_type: platform
+repository_domain: digital-health
+visibility_class: internal
+primary_team: at-medical-dev
+secondary_teams:
+  - at-medical-ops
+  - at-medical-security
+deploy_targets:
+  - vps
+  - docker
+  - kubernetes
+status_relevance: critical
+customer_facing: true
+sensitivity_level: high
+artifact_intake_allowed: true
+vps_import_allowed: true
+webspace_import_allowed: false
+r2_import_allowed: true

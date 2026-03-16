@@ -6,6 +6,15 @@
   <strong>PrescriptCheck</strong> ist eine digitale Plattform zur Validierung von Privatrezepten in Deutschland. Ziel ist es, Apotheken eine sichere Möglichkeit zu geben, die Echtheit und Gültigkeit eines Rezepts zu überprüfen – datenschutzkonform, revisionssicher und praxisnah.
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/type-platform-blue?style=flat-square" alt="Type: Platform"/>
+  <img src="https://img.shields.io/badge/layer-digital--health-green?style=flat-square" alt="Layer: Digital Health"/>
+  <img src="https://img.shields.io/badge/visibility-internal-orange?style=flat-square" alt="Visibility: Internal"/>
+  <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="Status: Active"/>
+  <img src="https://img.shields.io/badge/release-0.9.0-blue?style=flat-square" alt="Release: 0.9.0"/>
+  <img src="https://img.shields.io/badge/team-AT%20Medical%20Dev-purple?style=flat-square" alt="Team: AT Medical Dev"/>
+</p>
+
 ---
 
 ## Features
@@ -235,3 +244,14 @@ Jegliche missbräuchliche oder nicht autorisierte Nutzung – insbesondere zur R
 **Projektleitung:** Dr. Andreas Tremml  
 **Support:** support@at-medical.de  
 **Webseite:** [www.at-medical.de](https://www.at-medical.de)
+
+---
+
+<div style="border-left: 3px solid #ccc; padding-left: 12px; color: #888; font-size: 0.85em; margin-top: 24px;">
+
+Version: 0.9.0  
+Date: 2026-03-16  
+Status: verified  
+Repository: DIG-prescriptcheck
+
+</div>

@@ -1,0 +1,25 @@
+# AT Medical Enterprise Tagging Rules
+# Version: 0.9.0
+# Repository: DIG-prescriptcheck
+
+rules:
+  required_tags:
+    - domain
+    - team-owner
+    - security-class
+    - lifecycle-state
+
+  file_patterns:
+    - pattern: "*.yml"
+      required: [domain, team-owner]
+    - pattern: "*.md"
+      required: [domain, lifecycle-state]
+    - pattern: "*.js"
+      required: [domain, team-owner, security-class]
+    - pattern: "*.ts"
+      required: [domain, team-owner, security-class]
+
+  enforcement:
+    mode: warn
+    fail_on_missing_required: false
+    report_path: status/generated/tag-report.json

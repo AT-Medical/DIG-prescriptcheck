@@ -1,0 +1,55 @@
+# AT Medical Enterprise - Dependabot Configuration
+# Repository: DIG-prescriptcheck
+# Version: 0.9.0
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    labels:
+      - "compatibility"
+    commit-message:
+      prefix: "ci"
+
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Europe/Berlin"
+    labels:
+      - "compatibility"
+    commit-message:
+      prefix: "chore(backend)"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:30"
+      timezone: "Europe/Berlin"
+    labels:
+      - "compatibility"
+    commit-message:
+      prefix: "chore(frontend)"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    labels:
+      - "compatibility"
+    commit-message:
+      prefix: "docker"

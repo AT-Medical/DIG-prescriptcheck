@@ -1,0 +1,31 @@
+name: Repository Self Check
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  selfcheck:
+    runs-on: ubuntu-latest
+    name: Repository Health Self Check
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run repository self-check script
+        run: |
+          chmod +x scripts/validate/repository-selfcheck.sh
+          bash scripts/validate/repository-selfcheck.sh
+
+      - name: Upload health report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-health-report
+          path: status/generated/selfcheck-report.txt
+          if-no-files-found: ignore
