@@ -6,21 +6,15 @@
 repository_name: DIG-prescriptcheck
 repository: PrescriptCheck
 repo-type: product
-repository_type: platform
 repository_domain: digital-health
 domain: medical-software
 security-class: high
 sensitivity_level: high
-visibility_class: internal
 visibility: private
 
 deploy_targets:
   - vps
   - docker
-  - r2
-
-deploy-targets:
-  - vps
   - r2
 
 status_relevance: critical
@@ -40,11 +34,6 @@ teams:
     - AT-Medical/devops-team
     - AT-Medical/security-team
     - AT-Medical/infrastructure-team
-
-primary_team: at-medical-dev
-secondary_teams:
-  - at-medical-ops
-  - at-medical-security
 
 tags:
   - domain:medical-software
