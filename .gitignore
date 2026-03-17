@@ -39,5 +39,10 @@ pids/
 docker-compose.override.yml
 *.local.yaml
 
+# Artifacts (build outputs – keep only the README marker)
+artifacts/*
+!artifacts/README.md
+
+
 # GitHub Actions
 .github/workflows/*.log

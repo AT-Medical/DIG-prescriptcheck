@@ -1,0 +1,91 @@
+name: Dependency Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  dependency-scan-backend:
+    name: Backend Dependency Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run npm audit (backend)
+        run: npm audit --production --audit-level=moderate
+        continue-on-error: true
+
+      - name: Generate audit report (backend)
+        if: always()
+        run: npm audit --json > npm-audit-backend.json
+        continue-on-error: true
+
+      - name: Upload backend audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-backend
+          path: backend/npm-audit-backend.json
+          retention-days: 30
+
+  dependency-scan-frontend:
+    name: Frontend Dependency Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run npm audit (frontend)
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Generate audit report (frontend)
+        if: always()
+        run: npm audit --json > npm-audit-frontend.json
+        continue-on-error: true
+
+      - name: Upload frontend audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-frontend
+          path: frontend/npm-audit-frontend.json
+          retention-days: 30

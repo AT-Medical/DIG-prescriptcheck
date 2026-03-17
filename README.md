@@ -7,12 +7,13 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/type-platform-blue?style=flat-square" alt="Type: Platform"/>
-  <img src="https://img.shields.io/badge/layer-digital--health-green?style=flat-square" alt="Layer: Digital Health"/>
-  <img src="https://img.shields.io/badge/visibility-internal-orange?style=flat-square" alt="Visibility: Internal"/>
-  <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="Status: Active"/>
-  <img src="https://img.shields.io/badge/release-0.9.0-blue?style=flat-square" alt="Release: 0.9.0"/>
-  <img src="https://img.shields.io/badge/team-AT%20Medical%20Dev-purple?style=flat-square" alt="Team: AT Medical Dev"/>
+  <img src="https://img.shields.io/badge/type-product-blue?style=flat-square" alt="type: product"/>
+  <img src="https://img.shields.io/badge/domain-medical--software-green?style=flat-square" alt="domain: medical-software"/>
+  <img src="https://img.shields.io/badge/visibility-private-red?style=flat-square" alt="visibility: private"/>
+  <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square" alt="status: active"/>
+  <img src="https://img.shields.io/badge/deploy-vps%20%7C%20r2-orange?style=flat-square" alt="deploy: vps | r2"/>
+  <img src="https://img.shields.io/badge/team-admin-blueviolet?style=flat-square" alt="team: admin"/>
+  <img src="https://img.shields.io/badge/team-security--critical-red?style=flat-square" alt="team: security-critical"/>
 </p>
 
 ---
@@ -36,16 +37,20 @@
 ## Projektstruktur
 
 ```
-/backend            → Node.js (Express) API  
-/frontend           → Vue 3 App mit Vite  
-/scripts            → Shell-Skripte für Deployment, SSL, Seeding  
-/docs               → Dokumentation, Architektur, Indexseiten  
-/scorm              → SCORM Module für Weiterbildung  
-.github/workflows   → CI/CD Konfiguration (GitHub Actions)  
-pm2.config.js       → Prozessmanager-Konfiguration (PM2)  
-Dockerfile          → Docker-Build-Anleitung  
-docker-compose.yml  → Lokale Multi-Service-Entwicklung  
-.env.template       → Beispiel für Produktionskonfiguration  
+/backend            → Node.js (Express) API
+/frontend           → Vue 3 App mit Vite
+/scripts            → Shell-Skripte für Deployment, SSL, Seeding
+/docs               → Dokumentation, Architektur, Indexseiten
+/scorm              → SCORM Module für Weiterbildung
+/configs            → Shared configuration templates
+/tests              → Automatisierte Tests
+/metadata           → ATMED Repository-Profil und Enterprise-Tagging
+/artifacts          → CI/CD Build-Artefakte (nicht eingecheckt)
+.github/workflows   → CI/CD Konfiguration (GitHub Actions)
+pm2.config.js       → Prozessmanager-Konfiguration (PM2)
+Dockerfile          → Docker-Build-Anleitung
+docker-compose.yml  → Lokale Multi-Service-Entwicklung
+.env.example        → Beispiel für Produktionskonfiguration
 ```
 
 ---
@@ -62,7 +67,7 @@ npm install
 
 ### 2. Umgebungsvariablen
 
-Erstelle eine Datei `.env.production` auf Basis der Vorlage `.env.template`:
+Erstelle eine Datei `.env.production` auf Basis der Vorlage `.env.example`:
 
 ```env
 NODE_ENV=production
@@ -128,7 +133,7 @@ PrescriptCheck wurde nach dem Prinzip der „Security by Design“ und „Privac
 node_modules/
 .env
 .env.production
-.env.template
+.env.example
 dist/
 .vscode/
 logs/
@@ -247,11 +252,13 @@ Jegliche missbräuchliche oder nicht autorisierte Nutzung – insbesondere zur R
 
 ---
 
-<div style="border-left: 3px solid #ccc; padding-left: 12px; color: #888; font-size: 0.85em; margin-top: 24px;">
+## Versionsinfo
 
-Version: 0.9.0  
-Date: 2026-03-16  
-Status: verified  
-Repository: DIG-prescriptcheck
-
-</div>
+| Feld | Wert |
+|---|---|
+| **Version** | 0.9.0 |
+| **Datum** | 2026-03-16 |
+| **Status** | Verified |
+| **Repository** | DIG-prescriptcheck / PrescriptCheck |
+| **Owner** | AT Medical GmbH |
+| **Security Class** | High |

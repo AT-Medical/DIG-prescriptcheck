@@ -1,19 +1,65 @@
+# ATMED Repository Profile
+# Repository: DIG-prescriptcheck / PrescriptCheck
+# Managed by: AT-Medical/admin-team
+# Last updated: 2026-03-16
+
 repository_name: DIG-prescriptcheck
+repository: PrescriptCheck
+repo-type: product
 repository_type: platform
 repository_domain: digital-health
+domain: medical-software
+security-class: high
+sensitivity_level: high
 visibility_class: internal
-primary_team: at-medical-dev
-secondary_teams:
-  - at-medical-ops
-  - at-medical-security
+visibility: private
+
 deploy_targets:
   - vps
   - docker
-  - kubernetes
+  - r2
+
+deploy-targets:
+  - vps
+  - r2
+
 status_relevance: critical
 customer_facing: true
-sensitivity_level: high
 artifact_intake_allowed: true
 vps_import_allowed: true
 webspace_import_allowed: false
 r2_import_allowed: true
+
+review: required
+security-review: required
+
+teams:
+  primary:
+    - AT-Medical/admin-team
+  secondary:
+    - AT-Medical/devops-team
+    - AT-Medical/security-team
+    - AT-Medical/infrastructure-team
+
+primary_team: at-medical-dev
+secondary_teams:
+  - at-medical-ops
+  - at-medical-security
+
+tags:
+  - domain:medical-software
+  - domain:prescription-validation
+  - security:high
+  - visibility:restricted
+  - deploy-target:vps
+  - deploy-target:r2
+  - owner:admin-team
+  - owner:security-team
+
+integration:
+  atmed-infrastructure-pipeline: true
+  central-smtp-reporting: true
+  central-governance-rules: true
+
+status: active
+version: "0.9.0"

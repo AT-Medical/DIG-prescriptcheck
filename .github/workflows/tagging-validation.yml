@@ -1,0 +1,45 @@
+name: Tag Validation
+
+on:
+  push:
+    tags:
+      - '**'
+
+jobs:
+  validate-tag:
+    name: Validate Semantic Version Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate tag format
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "Validating tag: $TAG"
+
+          # Enforce semver format: v<major>.<minor>.<patch>[-<prerelease>]
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9._-]+)?$ ]]; then
+            echo "❌ Tag '$TAG' does not follow semantic versioning (e.g., v1.2.3 or v1.2.3-rc.1)."
+            exit 1
+          fi
+          echo "✅ Tag '$TAG' is a valid semantic version."
+
+      - name: Verify tag matches metadata version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          TAG_VERSION="${TAG#v}"
+          META_VERSION=$(grep '^version:' metadata/repository-profile.yml | awk '{print $2}' | tr -d '"')
+
+          echo "Tag version:      $TAG_VERSION"
+          echo "Metadata version: $META_VERSION"
+
+          if [ "$TAG_VERSION" != "$META_VERSION" ]; then
+            echo "⚠️  Warning: tag version ($TAG_VERSION) does not match metadata/repository-profile.yml version ($META_VERSION)."
+            echo "Please keep metadata/repository-profile.yml in sync with the release tag."
+            # Non-fatal: warn but do not block the release
+          else
+            echo "✅ Tag version matches metadata version."
+          fi
