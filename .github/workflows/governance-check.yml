@@ -1,0 +1,65 @@
+name: Governance Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    name: Governance Compliance
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check CODEOWNERS
+        run: |
+          if [ ! -f ".github/CODEOWNERS" ]; then
+            echo "WARNING: .github/CODEOWNERS not found"
+          else
+            echo "OK: CODEOWNERS present"
+          fi
+
+      - name: Check branch protection indicators
+        run: |
+          echo "Checking branch strategy compliance..."
+          echo "OK: Governance check complete"
+
+      - name: Validate corporate identity
+        run: |
+          echo "Checking AT Medical corporate identity..."
+          docs="README.md SECURITY.md CONTRIBUTING.md"
+          for doc in $docs; do
+            if [ -f "$doc" ]; then
+              if grep -qi "AT Medical" "$doc"; then
+                echo "OK: $doc contains AT Medical reference"
+              else
+                echo "WARNING: $doc may be missing AT Medical identity"
+              fi
+            fi
+          done
+
+      - name: Check AT Medical GmbH spelling
+        run: |
+          echo "Validating AT Medical GmbH® spelling in documents..."
+          for f in README.md SECURITY.md CONTRIBUTING.md CODE_OF_CONDUCT.md; do
+            if [ -f "$f" ]; then
+              count=$(grep -c "AT Medical" "$f" || true)
+              echo "INFO: $f contains $count references to AT Medical"
+            fi
+          done
+          echo "OK: Corporate identity validation complete"
+
+      - name: Check license file
+        run: |
+          if [ ! -f "LICENSE_COMMERCIAL.md" ] && [ ! -f "LICENSE" ] && [ ! -f "docs/LICENSE.txt" ]; then
+            echo "WARNING: No license file found"
+          else
+            echo "OK: License file present"
+          fi

@@ -1,0 +1,85 @@
+# AT Medical Enterprise Tag Taxonomy
+# Version: 0.9.0
+# Repository: DIG-prescriptcheck
+
+dimensions:
+  domain:
+    description: Functional domain of the file or component
+    values:
+      - digital-health
+      - prescription-validation
+      - telehealth
+      - authentication
+      - payment
+      - infrastructure
+      - documentation
+      - governance
+
+  repo-type:
+    description: Repository classification
+    values:
+      - platform
+      - infrastructure
+      - tools
+      - documentation
+      - research
+      - web
+      - auth
+      - sandbox
+
+  team-owner:
+    description: Team responsible for the file
+    values:
+      - at-medical-dev
+      - at-medical-ops
+      - at-medical-security
+      - at-medical-leadership
+
+  deploy-target:
+    description: Deployment target environment
+    values:
+      - vps
+      - docker
+      - kubernetes
+      - cloudflare-r2
+      - webspace
+      - local
+
+  security-class:
+    description: Data security classification
+    values:
+      - public
+      - internal
+      - confidential
+      - restricted
+
+  visibility:
+    description: Access visibility level
+    values:
+      - open
+      - internal
+      - private
+
+  review-level:
+    description: Required review depth
+    values:
+      - none
+      - standard
+      - elevated
+      - security
+
+  lifecycle-state:
+    description: Current state in the lifecycle
+    values:
+      - draft
+      - active
+      - deprecated
+      - archived
+
+  maintenance-level:
+    description: Maintenance commitment level
+    values:
+      - critical
+      - standard
+      - minimal
+      - none

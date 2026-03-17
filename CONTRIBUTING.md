@@ -51,3 +51,14 @@ Please report **critical vulnerabilities or exploits** **privately** via email:
 
 **Wir freuen uns auf deine Unterstützung!**  
 **We look forward to your contributions!**
+
+---
+
+<div style="border-left: 3px solid #ccc; padding-left: 12px; color: #888; font-size: 0.85em; margin-top: 24px;">
+
+Version: 0.9.0  
+Date: 2026-03-16  
+Status: verified  
+Repository: DIG-prescriptcheck
+
+</div>

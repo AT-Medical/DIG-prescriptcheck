@@ -259,6 +259,6 @@ Jegliche missbräuchliche oder nicht autorisierte Nutzung – insbesondere zur R
 | **Version** | 0.9.0 |
 | **Datum** | 2026-03-16 |
 | **Status** | Verified |
-| **Repository** | PrescriptCheck |
+| **Repository** | DIG-prescriptcheck / PrescriptCheck |
 | **Owner** | AT Medical GmbH |
 | **Security Class** | High |

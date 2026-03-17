@@ -1,0 +1,71 @@
+name: File Tagging Validation
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'fix/**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-tags:
+    runs-on: ubuntu-latest
+    name: Validate File Tags
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate metadata presence
+        run: |
+          echo "Checking metadata/tags/ directory..."
+          if [ ! -d "metadata/tags" ]; then
+            echo "ERROR: metadata/tags/ directory is missing"
+            exit 1
+          fi
+          echo "OK: metadata/tags/ exists"
+
+      - name: Validate tag files
+        run: |
+          for f in taxonomy.yml rules.yml examples.yml file-tags.yml; do
+            if [ ! -f "metadata/tags/$f" ]; then
+              echo "ERROR: metadata/tags/$f is missing"
+              exit 1
+            fi
+            echo "OK: metadata/tags/$f exists"
+          done
+
+      - name: Validate repository profile
+        run: |
+          if [ ! -f "metadata/repository-profile.yml" ]; then
+            echo "ERROR: metadata/repository-profile.yml is missing"
+            exit 1
+          fi
+          echo "OK: metadata/repository-profile.yml exists"
+
+      - name: Check required tag dimensions
+        run: |
+          echo "Validating taxonomy dimensions..."
+          for dim in domain repo-type team-owner deploy-target security-class; do
+            if ! grep -q "$dim:" metadata/tags/taxonomy.yml; then
+              echo "WARNING: taxonomy dimension '$dim' not found"
+            else
+              echo "OK: dimension '$dim' present"
+            fi
+          done
+
+      - name: Generate tag report
+        run: |
+          mkdir -p status/generated
+          echo "{" > status/generated/tag-report.json
+          echo "  \"generated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"," >> status/generated/tag-report.json
+          echo "  \"repository\": \"DIG-prescriptcheck\"," >> status/generated/tag-report.json
+          echo "  \"status\": \"validated\"" >> status/generated/tag-report.json
+          echo "}" >> status/generated/tag-report.json
+          echo "Tag report generated."
+
+      - name: Upload tag report
+        uses: actions/upload-artifact@v4
+        with:
+          name: tag-report
+          path: status/generated/tag-report.json

@@ -1,0 +1,59 @@
+# AT Medical Enterprise File Tag Registry
+# Version: 0.9.0
+# Repository: DIG-prescriptcheck
+# Auto-updated by: .github/workflows/file-tagging.yml
+
+files:
+  README.md:
+    domain: digital-health
+    team-owner: at-medical-dev
+    security-class: public
+    lifecycle-state: active
+    visibility: open
+    review-level: standard
+    maintenance-level: critical
+
+  CONTRIBUTING.md:
+    domain: governance
+    team-owner: at-medical-dev
+    security-class: public
+    lifecycle-state: active
+    visibility: open
+    review-level: none
+    maintenance-level: standard
+
+  SECURITY.md:
+    domain: governance
+    team-owner: at-medical-security
+    security-class: public
+    lifecycle-state: active
+    visibility: open
+    review-level: security
+    maintenance-level: critical
+
+  CHANGELOG.md:
+    domain: governance
+    team-owner: at-medical-dev
+    security-class: public
+    lifecycle-state: active
+    visibility: open
+    review-level: none
+    maintenance-level: standard
+
+  backend/app.js:
+    domain: prescription-validation
+    team-owner: at-medical-dev
+    security-class: confidential
+    lifecycle-state: active
+    visibility: private
+    review-level: elevated
+    maintenance-level: critical
+
+  .github/workflows/ci.yml:
+    domain: infrastructure
+    team-owner: at-medical-ops
+    security-class: internal
+    lifecycle-state: active
+    visibility: internal
+    review-level: standard
+    maintenance-level: critical

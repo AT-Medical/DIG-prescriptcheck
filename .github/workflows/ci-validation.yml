@@ -1,0 +1,78 @@
+name: CI Validation
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'fix/**', 'hotfix/**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-structure:
+    runs-on: ubuntu-latest
+    name: Validate Repository Structure
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required root files
+        run: |
+          required_files="README.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md CHANGELOG.md"
+          for f in $required_files; do
+            if [ ! -f "$f" ]; then
+              echo "FAIL: Required file $f is missing"
+              exit 1
+            fi
+            echo "OK: $f"
+          done
+
+      - name: Check required directories
+        run: |
+          required_dirs=".github/workflows metadata docs scripts"
+          for d in $required_dirs; do
+            if [ ! -d "$d" ]; then
+              echo "FAIL: Required directory $d is missing"
+              exit 1
+            fi
+            echo "OK: $d/"
+          done
+
+      - name: Check metadata presence
+        run: |
+          if [ ! -f "metadata/repository-profile.yml" ]; then
+            echo "FAIL: metadata/repository-profile.yml missing"
+            exit 1
+          fi
+          echo "OK: metadata/repository-profile.yml"
+
+      - name: Validate workflows exist
+        run: |
+          required_workflows="ci.yml audit.yml"
+          for wf in $required_workflows; do
+            if [ ! -f ".github/workflows/$wf" ]; then
+              echo "WARNING: Workflow $wf not found"
+            else
+              echo "OK: .github/workflows/$wf"
+            fi
+          done
+
+  validate-documentation:
+    runs-on: ubuntu-latest
+    name: Validate Documentation
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check verification blocks
+        run: |
+          docs="README.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md"
+          for doc in $docs; do
+            if ! grep -q "Version: 0.9.0" "$doc" 2>/dev/null; then
+              echo "WARNING: $doc missing enterprise verification block"
+            else
+              echo "OK: $doc has verification block"
+            fi
+          done

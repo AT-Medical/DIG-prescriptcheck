@@ -1,0 +1,28 @@
+# AT Medical Enterprise Tag Examples
+# Version: 0.9.0
+# Repository: DIG-prescriptcheck
+
+examples:
+  - file: backend/controllers/prescriptionController.js
+    tags:
+      domain: prescription-validation
+      team-owner: at-medical-dev
+      security-class: confidential
+      lifecycle-state: active
+      maintenance-level: critical
+
+  - file: docs/ARCHITECTURE.md
+    tags:
+      domain: digital-health
+      team-owner: at-medical-dev
+      security-class: internal
+      lifecycle-state: active
+      maintenance-level: standard
+
+  - file: .github/workflows/ci.yml
+    tags:
+      domain: infrastructure
+      team-owner: at-medical-ops
+      security-class: internal
+      lifecycle-state: active
+      maintenance-level: critical

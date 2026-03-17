@@ -1,4 +1,6 @@
-# Dependabot Configuration
+# AT Medical Enterprise - Dependabot Configuration
+# Repository: DIG-prescriptcheck / PrescriptCheck
+# Version: 0.9.0
 # Keeps dependencies automatically up-to-date and surfaces security advisories.
 # See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 
@@ -82,4 +84,23 @@ updates:
       - "github-actions"
     commit-message:
       prefix: "chore(actions)"
+      include: "scope"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "AT-Medical/admin-team"
+      - "AT-Medical/devops-team"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "chore(docker)"
       include: "scope"

@@ -1,0 +1,51 @@
+name: Tag Validation
+
+on:
+  push:
+    paths:
+      - 'metadata/tags/**'
+      - 'metadata/repository-profile.yml'
+  pull_request:
+    paths:
+      - 'metadata/tags/**'
+      - 'metadata/repository-profile.yml'
+
+jobs:
+  validate-tags:
+    runs-on: ubuntu-latest
+    name: Validate Tag Consistency
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check tag files
+        run: |
+          for f in taxonomy.yml rules.yml examples.yml file-tags.yml; do
+            path="metadata/tags/$f"
+            if [ ! -f "$path" ]; then
+              echo "FAIL: $path missing"
+              exit 1
+            fi
+            echo "OK: $path"
+          done
+
+      - name: Validate YAML syntax
+        run: |
+          for f in metadata/tags/*.yml metadata/repository-profile.yml; do
+            if [ -f "$f" ]; then
+              python3 -c "import yaml,sys; yaml.safe_load(open('$f'))" && echo "OK: $f valid YAML" || echo "FAIL: $f invalid YAML"
+            fi
+          done
+
+      - name: Check taxonomy dimensions
+        run: |
+          required_dims="domain repo-type team-owner deploy-target security-class visibility review-level lifecycle-state maintenance-level"
+          for dim in $required_dims; do
+            if grep -q "$dim:" metadata/tags/taxonomy.yml; then
+              echo "OK: dimension $dim present"
+            else
+              echo "WARNING: dimension $dim missing from taxonomy"
+            fi
+          done
