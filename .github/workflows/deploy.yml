@@ -11,7 +11,7 @@ jobs:
       contents: read
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Deployment via SSH (Backend)
         uses: appleboy/ssh-action@v1.2.5
