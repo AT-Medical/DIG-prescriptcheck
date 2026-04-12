@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run repository self-check script
         run: |
@@ -24,7 +24,7 @@ jobs:
 
       - name: Upload health report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: repository-health-report
           path: status/generated/selfcheck-report.txt
