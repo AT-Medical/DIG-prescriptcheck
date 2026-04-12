@@ -1,11 +1,14 @@
-COMMERCIAL SOFTWARE LICENSE
+PROPRIETARY SOURCE-AVAILABLE SOFTWARE LICENSE
 
 Copyright (c) 2024–2026 AT Medical GmbH. All rights reserved.
 
 This software and its source code are the exclusive property of AT Medical GmbH
-("Licensor"). Use, reproduction, distribution, or modification of this software,
-in whole or in part, is strictly prohibited without prior written permission from
-the Licensor.
+("Licensor"). This repository is source-available: the source code is made
+accessible for review and authorized use only. It is NOT open source and does NOT
+grant any open-source rights.
+
+Use, reproduction, distribution, or modification of this software, in whole or in
+part, is strictly prohibited without prior written permission from the Licensor.
 
 FULL LICENSE TERMS
 
@@ -27,3 +30,10 @@ executed license agreement — is prohibited and may result in legal action.
 This software is intended exclusively for use by licensed contract partners of
 AT Medical GmbH. Use in medical environments is subject to applicable statutory
 requirements.
+
+NO OPEN-SOURCE RIGHTS GRANTED
+
+This license does not grant any rights under any open-source or free software
+license. No rights to fork, sublicense, or publicly redistribute this software
+are granted. The availability of the source code does not imply any open-source
+license or waiver of intellectual property rights.
