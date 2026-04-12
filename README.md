@@ -1,3 +1,7 @@
+⚠️ **This repository is source-available but not open source. All rights are reserved by AT Medical GmbH.**
+
+---
+
 <p align="center">
   <img src="assets/logo.PNG" alt="PrescriptCheck Logo" width="200"/>
 </p>
