@@ -1,6 +1,6 @@
 # Dockerfile für PrescriptCheck
 
-FROM node:25-alpine
+FROM node:26-alpine
 
 # Arbeitsverzeichnis
 WORKDIR /app
