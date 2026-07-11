@@ -1,8 +1,10 @@
 # AT Medical Enterprise - Dependabot Configuration
 # Repository: DIG-prescriptcheck / PrescriptCheck
-# Version: 0.9.0
-# Keeps dependencies automatically up-to-date and surfaces security advisories.
-# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+# Version: 1.0.0
+#
+# Reviewer assignment is delegated to CODEOWNERS and repository rulesets.
+# Labels are not declared here because Dependabot rejects labels that do not
+# already exist in the target repository.
 
 version: 2
 
@@ -16,20 +18,16 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
-    reviewers:
-      - "AT-Medical/admin-team"
-      - "AT-Medical/devops-team"
-    labels:
-      - "dependencies"
-      - "security"
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
     ignore:
-      # Only patch/minor updates for production-critical packages; majors reviewed manually
+      # Production-sensitive major versions require isolated migration PRs.
       - dependency-name: "mongoose"
         update-types: ["version-update:semver-major"]
       - dependency-name: "stripe"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "uuid"
         update-types: ["version-update:semver-major"]
 
   # Frontend Node.js dependencies
@@ -41,16 +39,11 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
-    reviewers:
-      - "AT-Medical/admin-team"
-      - "AT-Medical/devops-team"
-    labels:
-      - "dependencies"
     commit-message:
       prefix: "chore(deps-frontend)"
       include: "scope"
 
-  # Root-level package (if any)
+  # Root-level package, if present
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -59,15 +52,11 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 3
-    reviewers:
-      - "AT-Medical/admin-team"
-    labels:
-      - "dependencies"
     commit-message:
       prefix: "chore(deps-root)"
       include: "scope"
 
-  # GitHub Actions
+  # GitHub Actions — immutable SHA references remain mandatory.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -76,17 +65,11 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
-    reviewers:
-      - "AT-Medical/admin-team"
-      - "AT-Medical/infrastructure-team"
-    labels:
-      - "dependencies"
-      - "github-actions"
     commit-message:
       prefix: "chore(actions)"
       include: "scope"
 
-  # Docker
+  # Docker runtime dependencies
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -95,12 +78,6 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 3
-    reviewers:
-      - "AT-Medical/admin-team"
-      - "AT-Medical/devops-team"
-    labels:
-      - "dependencies"
-      - "docker"
     commit-message:
       prefix: "chore(docker)"
       include: "scope"
